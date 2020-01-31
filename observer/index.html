@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Design Patterns - Observable</title>
+
+  <style>
+    * {
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-size: 1;
+      line-height: 2;
+      padding: 2rem;
+      background-color: #faf9f9;
+    }
+
+    input {
+      width: 100%;
+      display: block;
+      margin-bottom: 1rem;
+      font: inherit;
+      line-height: 3rem;
+      padding: 0 1rem;
+    }
+
+    button {
+      font: inherit;
+      line-height: 2rem;
+      padding: 0 1rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      &::before {
+        opacity: .5;
+        margin-right: .5rem;
+      }
+      &:nth-of-type(1)::before {
+        content: 'p1: ';
+      }
+      &:nth-of-type(2)::before {
+        content: 'p3: ';
+      }
+      &:nth-of-type(3)::before {
+        content: 'p3: ';
+      }
+    }
+  </style>
+
+  <script src="index.js"></script>
+</head>
+<body>
+
+  <input type="text" class="js-input" placeholder="type something here">
+  <button class="js-subscribe-p1">Subscribe</button>
+  <button class="js-unsubscribe-p1">Unsubscribe</button>
+  <p class="js-paragraph js-p1"></p>
+  <button class="js-subscribe-p2">Subscribe</button>
+  <button class="js-unsubscribe-p2">Unsubscribe</button>
+  <p class="js-paragraph js-p2"></p>
+  <button class="js-subscribe-p3">Subscribe</button>
+  <button class="js-unsubscribe-p3">Unsubscribe</button>
+  <p class="js-paragraph js-p3"></p>
+
+
+  <script>
+    
+    const input = document.querySelector('.js-input');
+    const paragraph = document.getElementsByClassName('js-paragraph');
+
+    const headingsObserver = new Observable;
+
+    input.addEventListener('keyup', e => {
+      headingsObserver.notify(e.target.value);
+    });
+
+    for (let i = 1; i <= paragraph.length; i++) {
+      const update = text => document.querySelector(`.js-p${i}`).textContent = text;
+      headingsObserver.subscribe(update);
+
+      document.querySelector(`.js-subscribe-p${i}`).addEventListener('click', e => {
+        headingsObserver.subscribe(update)
+        headingsObserver.notify();
+      });
+
+      document.querySelector(`.js-unsubscribe-p${i}`).addEventListener('click', e => {
+        headingsObserver.unsubscribe(update)
+      });
+
+    }
+
+  </script>
+</body>
+</html>
